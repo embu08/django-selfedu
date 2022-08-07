@@ -3,4 +3,8 @@ from django.shortcuts import render
 
 
 def index(request):
-    return HttpResponse('Страница приложения cats.')
+    return HttpResponse('Main page of the app "Cats"')
+
+
+def categories(request):
+    return HttpResponse('<h1>Cats by categories</h1>')
