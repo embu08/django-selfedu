@@ -11,7 +11,7 @@ menu = [{'title': 'Main', 'url_name': 'home'},
 
 
 def index(request):
-    posts = Cats.objects.all()
+    posts = Breeds.objects.all()
     context = {
         'title': 'Cats app main page',
         'menu': menu,

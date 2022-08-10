@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 
 
-class Cats(models.Model):
+class Breeds(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
     photo = models.ImageField(upload_to='photos/%Y/%m/%d/')
