@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Cats(models.Model):
@@ -11,3 +12,6 @@ class Cats(models.Model):
 
     def __str__(self):
         return f'{self.title.title()}, #{self.id}'
+
+    def get_absolute_url(self):
+        return reverse('show_post', kwargs={'post_id': self.pk})

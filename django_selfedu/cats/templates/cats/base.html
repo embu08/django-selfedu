@@ -11,14 +11,17 @@
           integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 {% block mainmenu %}
 <nav class="navbar navbar-expand-lg bg-dark text-white navbar-white">
     <div class="container">
-        <span class="navbar-brand me-auto text-white">{{ title }}</span>
 
         {% for m in menu %}
-        <a class='nav-link fs-4 p-2' href="">{{ m }}</a>
+        {% if m.title != 'Login' %}
+        <a class='nav-link fs-4 p-2' href="{% url m.url_name %}">{{ m.title }}</a>
+        {% else %}
+        <div class="ms-auto"><a class='btn btn-outline-light' href="{% url m.url_name %}">{{ m.title }}</a></div>
+        {% endif %}
         {% endfor %}
 
     </div>
@@ -30,6 +33,14 @@
     {% block content%}
     {% endblock %}
 </div>
+
+<footer class="mt-auto bg-light">
+    <div class="container ">
+        <div class="border-top p-2 border-dark">
+            <span class="fs-5">Footer</span>
+        </div>
+    </div>
+</footer>
 
 
 </body>
