@@ -12,10 +12,13 @@ menu = [{'title': 'Main', 'url_name': 'home'},
 
 def index(request):
     posts = Breeds.objects.all()
+    categories = Category.objects.all()
     context = {
-        'title': 'Cats app main page',
+        'title': 'Breeds',
         'menu': menu,
-        'posts': posts
+        'posts': posts,
+        'categories': categories,
+        'cat_selected': 0
     }
     return render(request, 'cats/index.html', context=context)
 
@@ -48,4 +51,20 @@ def login(request):
 
 
 def show_post(request, post_id):
-    return HttpResponse(f'Пост {post_id}')
+    return HttpResponse(f'Post {post_id}')
+
+
+def show_category(request, cat_id):
+    posts = Breeds.objects.filter(category_id=cat_id).all()
+    if len(posts) == 0:
+        raise Http404()
+    categories = Category.objects.all()
+    cur_breed = Category.objects.get(pk=cat_id)
+    context = {
+        'title': cur_breed.name,
+        'menu': menu,
+        'posts': posts,
+        'categories': categories,
+        'cat_selected': cat_id
+    }
+    return render(request, 'cats/index.html', context=context)
