@@ -1,0 +1,7 @@
+{% for c in cats %}
+{% if c.pk == cat_selected %}
+<li class="list-group-item col-md-6 text-secondary">{{ c.name }}</li>
+{% else %}
+<a href="{{ c.get_absolute_url }}" class="list-group-item col-md-6">{{ c.name }}</a>
+{% endif %}
+{% endfor %}

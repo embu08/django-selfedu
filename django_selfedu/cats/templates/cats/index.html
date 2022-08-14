@@ -1,5 +1,6 @@
 {% extends 'cats/base.html' %}
 
+{% load cats_tags %}
 {% block content %}
 <h1 class="display-1 pt-4">Cats app. {{ title }}</h1>
 {% for p in posts %}
@@ -8,10 +9,14 @@
 
     <div class="card-header bg-white">
         <div class="row">
+<!--            title, cat, date-->
             <div class="col-md-9">
                 <h2 class="fs-1">{{ p.title }}</h2>
                 <p class="text-secondary">{{ p.category }}. Date: {{ p.time_update| date:"d-m-Y H:i" }}</p>
             </div>
+<!--            end title, cat, date-->
+
+<!--            photo-->
             <div class="col-md-3">
                 {% if p.photo %}
                 <div class="img_wrap float-end">
@@ -19,16 +24,20 @@
                          class="figure-img img-fluid rounded">
                 </div>
                 {% endif %}
+<!--                end photo-->
             </div>
         </div>
     </div>
     <div class="card-body m-4"><p class="card-text">{{ p.content | truncatewords:50}}</p></div>
 
 </div>
+
+<!--button read more-->
 <div class="d-grid d-md-flex justify-content-md-end pb-3">
     <a class="btn btn-outline-dark" href="{{ p.get_absolute_url }}">Read more</a>
 </div>
 {% endif %}
+<!--end button read more-->
 
 {% endfor %}
 {% endblock %}
