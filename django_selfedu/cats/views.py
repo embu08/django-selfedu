@@ -39,8 +39,8 @@ def login(request):
     return HttpResponse('login')
 
 
-def show_post(request, post_id):
-    post = get_object_or_404(Breeds, pk=post_id)
+def show_post(request, post_slug):
+    post = get_object_or_404(Breeds, slug=post_slug)
     context = {'title': post.title,
                'post': post,
                'cat_selected': post.category_id}
@@ -48,14 +48,12 @@ def show_post(request, post_id):
     return render(request, 'cats/post.html', context=context)
 
 
-def show_category(request, cat_id):
-    posts = Breeds.objects.filter(category_id=cat_id).all()
-    if len(posts) == 0:
-        raise Http404()
-    cur_breed = Category.objects.get(pk=cat_id)
+def show_category(request, cat_slug):
+    category = get_object_or_404(Category, slug=cat_slug)
+    posts = Breeds.objects.filter(category=category.id).all()
     context = {
-        'title': cur_breed.name,
+        'title': category.name,
         'posts': posts,
-        'cat_selected': cat_id
+        'cat_selected': category.id
     }
     return render(request, 'cats/index.html', context=context)
