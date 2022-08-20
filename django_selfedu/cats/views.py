@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
+from .forms import *
 
 
 def index(request):
@@ -28,7 +29,18 @@ def about(request):
 
 
 def add(request):
-    return HttpResponse('add')
+    if request.method == 'POST':
+        form = AddBreedForm(request.POST)
+        if form.is_valid():
+            try:
+                Breeds.objects.create(**form.cleaned_data)
+                return redirect('home')
+            except:
+                form.add_error(None, 'Error adding post')
+    else:
+        form = AddBreedForm()
+
+    return render(request, 'cats/add.html', {'title': 'Add a new breed', 'form': form})
 
 
 def contact(request):

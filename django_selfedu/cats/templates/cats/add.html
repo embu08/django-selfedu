@@ -1,0 +1,30 @@
+{% extends 'cats/base.html' %}
+
+{% load cats_tags %}
+{% block content %}
+<h1 class="display-1 pt-4">{{ title }}</h1>
+<form action="{% url 'add' %}" method="POST">
+    {% csrf_token %}
+    <div class="list-group-item-danger fs-3">{{ form.non_field_errors }}</div>
+    <div class="border-bottom border-secondary pb-3 pt-3"> {% for f in form %}
+
+
+        <div class="row p-2">
+            <label for="{{ f.id_for_label }}" class="col-md-2 p-1">{{ f.label }}</label>
+            {% if f.label != 'Category' %}
+            <div class="col-md-10">{{ f }}</div>
+            {% else %}
+            <div class="col-md-2 p-0">{{ f }}</div>
+            {% endif %}
+            {% if f.errors %}
+            <div class="col-md-2"></div>
+            <div class="text-danger col-md-10 pt-4" style="list-style: none;">{{ f.errors }}</div>
+            {% endif %}
+        </div>
+
+        {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-outline-dark mb-3 mt-3">Add a breed</button>
+</form>
+{% endblock %}
