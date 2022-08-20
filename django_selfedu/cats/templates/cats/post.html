@@ -1,0 +1,21 @@
+{% extends 'cats/base.html' %}
+
+{% load cats_tags %}
+{% block content %}
+<h1 class="display-1 pt-4 pb-4 border-bottom">{{ title }}</h1>
+<div class="card mt-4 border-white">
+    <div class="row fs-4 p-3">
+        {% if post.photo %}
+        <div class="col-md-4">
+
+            <img src="{{ post.photo.url }}" alt="{{ post.title }}"
+                 class="figure-img img-fluid rounded">
+
+        </div>
+        <div class="col-md-8 p-1">{{ post.content|linebreaks  }}</div>
+        {% else %}
+        <div class="col-md-12">{{ post.content|linebreaks }}</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

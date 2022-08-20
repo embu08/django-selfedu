@@ -19,6 +19,10 @@
         }
 
 
+
+
+
+
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -26,7 +30,7 @@
 {% block mainmenu %}
 <nav class="navbar navbar-expand-lg bg-dark text-white navbar-white">
     <div class="container">
-        {% get_menu as menu  %}
+        {% get_menu as menu %}
         {% for m in menu %}
         {% if m.title != 'Login' %}
         <a class='nav-link fs-4 p-2' href="{% url m.url_name %}">{{ m.title }}</a>
@@ -46,12 +50,13 @@
     <div class="d-flex justify-content-start">
         <!--        sidebar-->
         <aside class="col-md-2 sticky-xl-top text-muted align-self-start">
-            {% if cat_selected == 0 %}
-            <h2 class="h6 pt-4 pb-3 mb-4 text-secondary">All categories</h2>
-            {% else %}
-            <h2 class="h6 pt-4 pb-3 mb-4"><a href="{% url 'home' %}" class="text-dark" style="text-decoration: none">All
-                categories</a></h2>
-            {% endif %}
+            <h2 class="h6 pt-4 pb-3 mb-4"><a href="{% url 'home' %}"
+                                             {% if cat_selected == 0 %}
+                                             class="text-danger"
+                                             {% else %}
+                                             class="text-black"
+                                             {% endif%}
+                                             style="text-decoration: none">All categories</a></h2>
             <ul class="list-group list-group-flush">
                 {% show_categories sorting='name' cat_selected=cat_selected %}
             </ul>

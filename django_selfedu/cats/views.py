@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 
 
@@ -40,7 +40,12 @@ def login(request):
 
 
 def show_post(request, post_id):
-    return HttpResponse(f'Post {post_id}')
+    post = get_object_or_404(Breeds, pk=post_id)
+    context = {'title': post.title,
+               'post': post,
+               'cat_selected': post.category_id}
+
+    return render(request, 'cats/post.html', context=context)
 
 
 def show_category(request, cat_id):
