@@ -3,7 +3,7 @@
 {% load cats_tags %}
 {% block content %}
 <h1 class="display-1 pt-4">{{ title }}</h1>
-<form action="{% url 'add' %}" method="POST">
+<form action="{% url 'add' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="list-group-item-danger fs-3">{{ form.non_field_errors }}</div>
     <div class="border-bottom border-secondary pb-3 pt-3"> {% for f in form %}
@@ -14,7 +14,7 @@
             {% if f.label != 'Category' %}
             <div class="col-md-10">{{ f }}</div>
             {% else %}
-            <div class="col-md-2 p-0">{{ f }}</div>
+            <div class="col-md-2 pl-0">{{ f }}</div>
             {% endif %}
             {% if f.errors %}
             <div class="col-md-2"></div>

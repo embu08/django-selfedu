@@ -30,13 +30,10 @@ def about(request):
 
 def add(request):
     if request.method == 'POST':
-        form = AddBreedForm(request.POST)
+        form = AddBreedForm(request.POST, request.FILES)
         if form.is_valid():
-            try:
-                Breeds.objects.create(**form.cleaned_data)
-                return redirect('home')
-            except:
-                form.add_error(None, 'Error adding post')
+            form.save()
+            return redirect('home')
     else:
         form = AddBreedForm()
 
