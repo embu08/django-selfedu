@@ -4,7 +4,6 @@
 {% block content %}
 <h1 class="display-1 pt-4">{{ title }}</h1>
 {% for p in posts %}
-{% if p.is_published %}
 
 <div class="card mt-4 border-white">
 
@@ -38,7 +37,6 @@
     <a class="btn btn-outline-dark" href="{{ p.get_absolute_url }}">Read more</a>
 </div>
 
-{% endif %}
 <!--end button read more-->
 
 {% endfor %}

@@ -1,17 +1,30 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView
+
 from .models import *
 from .forms import *
 
 
-def index(request):
-    posts = Breeds.objects.all()
-    context = {
-        'title': 'Breeds',
-        'posts': posts,
-        'cat_selected': 0
-    }
-    return render(request, 'cats/index.html', context=context)
+class BreedsHome(ListView):
+    '''View for main page Cats app'''
+    model = Breeds
+    template_name = 'cats/index.html'
+    context_object_name = 'posts'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        '''returns some vars to html'''
+        context = super().get_context_data(**kwargs)
+        # here is where I can add some vars to html, but I moved menu to tags, so I don't need it
+        # context['menu'] = menu
+        context['cat_selected'] = 0
+        context['title'] = 'Cats app. Breeds'
+        return context
+
+    def get_queryset(self):
+        '''returns data from db to objects'''
+        return Breeds.objects.filter(is_published=True)
 
 
 def page_not_found(request, exception):
@@ -28,16 +41,15 @@ def about(request):
     return render(request, 'cats/about.html', context=context)
 
 
-def add(request):
-    if request.method == 'POST':
-        form = AddBreedForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = AddBreedForm()
+class CreateBreed(CreateView):
+    form_class = AddBreedForm
+    template_name = 'cats/add.html'
+    success_url = reverse_lazy('home')
 
-    return render(request, 'cats/add.html', {'title': 'Add a new breed', 'form': form})
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add a new breed'
+        return context
 
 
 def contact(request):
@@ -48,21 +60,36 @@ def login(request):
     return HttpResponse('login')
 
 
-def show_post(request, post_slug):
-    post = get_object_or_404(Breeds, slug=post_slug)
-    context = {'title': post.title,
-               'post': post,
-               'cat_selected': post.category_id}
+class ShowPost(DetailView):
+    model = Breeds
+    template_name = 'cats/post.html'
+    context_object_name = 'post'
+    slug_url_kwarg = 'post_slug'
 
-    return render(request, 'cats/post.html', context=context)
+    # when we use pk instead of slug for URL
+    # pk_url_kwarg = 'post_pk'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.kwargs['post_slug'].title()
+        return context
 
 
-def show_category(request, cat_slug):
-    category = get_object_or_404(Category, slug=cat_slug)
-    posts = Breeds.objects.filter(category=category.id).all()
-    context = {
-        'title': category.name,
-        'posts': posts,
-        'cat_selected': category.id
-    }
-    return render(request, 'cats/index.html', context=context)
+class BreedsCategory(ListView):
+    model = Breeds
+    template_name = 'cats/index.html'
+    context_object_name = 'posts'
+    allow_empty = False
+
+    def get_queryset(self):
+        return Breeds.objects.filter(category__slug=self.kwargs['cat_slug'], is_published=True)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = context['posts'][0].category
+        context['cat_selected'] = context['posts'][0].category_id
+        return context
+
+
+def admin_page(request):
+    pass
