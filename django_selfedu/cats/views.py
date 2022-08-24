@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -5,9 +6,10 @@ from django.views.generic import ListView, DetailView, CreateView
 
 from .models import *
 from .forms import *
+from .utils import *
 
 
-class BreedsHome(ListView):
+class BreedsHome(DataMixin, ListView):
     '''View for main page Cats app'''
     model = Breeds
     template_name = 'cats/index.html'
@@ -16,11 +18,8 @@ class BreedsHome(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         '''returns some vars to html'''
         context = super().get_context_data(**kwargs)
-        # here is where I can add some vars to html, but I moved menu to tags, so I don't need it
-        # context['menu'] = menu
-        context['cat_selected'] = 0
-        context['title'] = 'Cats app. Breeds'
-        return context
+        c_def = self.get_user_context(title='Cats app. Breeds')
+        return dict(list(context.items()) + list(c_def.items()))
 
     def get_queryset(self):
         '''returns data from db to objects'''
@@ -41,15 +40,16 @@ def about(request):
     return render(request, 'cats/about.html', context=context)
 
 
-class CreateBreed(CreateView):
+class CreateBreed(LoginRequiredMixin, DataMixin, CreateView):
     form_class = AddBreedForm
     template_name = 'cats/add.html'
     success_url = reverse_lazy('home')
+    raise_exception = True
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Add a new breed'
-        return context
+        c_def = self.get_user_context(title='Add a new breed')
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 def contact(request):
@@ -60,7 +60,7 @@ def login(request):
     return HttpResponse('login')
 
 
-class ShowPost(DetailView):
+class ShowPost(DataMixin, DetailView):
     model = Breeds
     template_name = 'cats/post.html'
     context_object_name = 'post'
@@ -71,11 +71,11 @@ class ShowPost(DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = self.kwargs['post_slug'].title()
-        return context
+        c_def = self.get_user_context(title=context['post'])
+        return dict(list(context.items()) + list(c_def.items()))
 
 
-class BreedsCategory(ListView):
+class BreedsCategory(DataMixin, ListView):
     model = Breeds
     template_name = 'cats/index.html'
     context_object_name = 'posts'
@@ -86,9 +86,9 @@ class BreedsCategory(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = context['posts'][0].category
-        context['cat_selected'] = context['posts'][0].category_id
-        return context
+        c_def = self.get_user_context(title=context['posts'][0].category,
+                                      cat_selected=context['posts'][0].category_id)
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 def admin_page(request):
