@@ -1,4 +1,6 @@
+from django.contrib.auth import logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -26,20 +28,6 @@ class BreedsHome(DataMixin, ListView):
         return Breeds.objects.filter(is_published=True)
 
 
-def page_not_found(request, exception):
-    return HttpResponseNotFound(
-        f'<h1>requested page is not found, please enter correct address or visit another page</h1>'
-        '<a href="{% url "home" %}">home</a>'
-        f'<p>cat</p>')
-
-
-def about(request):
-    context = {
-        'title': 'About site',
-    }
-    return render(request, 'cats/about.html', context=context)
-
-
 class CreateBreed(LoginRequiredMixin, DataMixin, CreateView):
     form_class = AddBreedForm
     template_name = 'cats/add.html'
@@ -49,25 +37,6 @@ class CreateBreed(LoginRequiredMixin, DataMixin, CreateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Add a new breed')
-        return dict(list(context.items()) + list(c_def.items()))
-
-
-def contact(request):
-    return HttpResponse('contact')
-
-
-def login(request):
-    return HttpResponse('login')
-
-
-class RegisterUser(DataMixin, CreateView):
-    form_class = RegisterUserForm
-    template_name = 'cats/register.html'
-    success_url = reverse_lazy('login')
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title="Sign Up")
         return dict(list(context.items()) + list(c_def.items()))
 
 
@@ -102,5 +71,59 @@ class BreedsCategory(DataMixin, ListView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
+# Views for users
+class LoginUser(DataMixin, LoginView):
+    form_class = LoginUserForm
+    template_name = 'cats/login.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Authentication')
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def get_success_url(self):
+        return reverse_lazy('home')
+
+
+class RegisterUser(DataMixin, CreateView):
+    form_class = RegisterUserForm
+    template_name = 'cats/register.html'
+    success_url = reverse_lazy('login')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Sign Up")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('home')
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
+
+
+#
+def about(request):
+    context = {
+        'title': 'About site',
+    }
+    return render(request, 'cats/about.html', context=context)
+
+
 def admin_page(request):
     pass
+
+
+def contact(request):
+    return HttpResponse('contact')
+
+
+def page_not_found(request, exception):
+    return HttpResponseNotFound(
+        f'<h1>requested page is not found, please enter correct address or visit another page</h1>'
+        '<a href="{% url "home" %}">home</a>'
+        f'<p>cat</p>')
