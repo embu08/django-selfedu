@@ -1,0 +1,24 @@
+{% extends 'cats/base.html' %}
+
+{% block content %}
+<main class="text-center">
+    <h1 class="h3 mb-5 fw-normal display-2 ">Please Sign Up</h1>
+    <form class="col-md-6 m-auto" method="POST">
+        {% csrf_token %}
+        {% for f in form %}
+        <div class="input-group p-2">
+            <label for="{{ f.id_for_label }}" class="col-md-4 input-group-text">{{ f.label }}</label>
+            {{ f }}
+        </div>
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="text-danger col-md-8 text-start">{{ f.errors }}</div>
+        </div>
+
+        {% endfor %}
+        <button class="btn btn-outline-dark btn-lg mt-4" type="submit">Sign in</button>
+    </form>
+</main>
+
+{% endblock %}
+

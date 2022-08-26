@@ -60,6 +60,17 @@ def login(request):
     return HttpResponse('login')
 
 
+class RegisterUser(DataMixin, CreateView):
+    form_class = RegisterUserForm
+    template_name = 'cats/register.html'
+    success_url = reverse_lazy('login')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Sign Up")
+        return dict(list(context.items()) + list(c_def.items()))
+
+
 class ShowPost(DataMixin, DetailView):
     model = Breeds
     template_name = 'cats/post.html'

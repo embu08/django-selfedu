@@ -27,6 +27,8 @@
         {
             background-color: #4285F4;
         }
+
+
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -39,13 +41,16 @@
         {% if m.title == 'Main' %}
         <a href="{% url m.url_name %}"><img src="{% static 'cats/images/paws.png' %}" alt="paws" height="52px"
                                             class="pe-2 ps-4"></a>
-        {% elif m.title != 'Login' %}
-        <a class='nav-link fs-4 p-2' href="{% url m.url_name %}">{{ m.title }}</a>
         {% else %}
-        <div class="ms-auto"><a class='btn btn-outline-light' href="{% url m.url_name %}">{{ m.title }}</a></div>
+        <a class='nav-link fs-4 p-2' href="{% url m.url_name %}">{{ m.title }}</a>
         {% endif %}
         {% endfor %}
-
+        {% if not user.is_authenticated %}
+        <a class='ms-auto btn btn-outline-light' href="{% url 'register' %}">Sign Up</a>
+        <a class='ms-2 btn btn-outline-light' href="{% url 'login' %}">Login</a>
+        {% else %}
+        <a class='ms-auto ms-2 btn btn-outline-light' href="{% url 'login' %}">Log Out</a>
+        {% endif %}
     </div>
 
 </nav>
@@ -79,6 +84,7 @@
             </ul>
         </aside>
         <!--        end block sidebar-->
+
         <!--        main content-->
         <div class="col-md-8">
             {% block content%}
@@ -102,7 +108,8 @@
 
         <!--        current-->
 
-        <li class="page-item"><a href="" class="page-link disabled text-dark">{{ page_obj.number}} of {{ page_obj.paginator.num_pages }}</a></li>
+        <li class="page-item"><a href="" class="page-link disabled text-dark">{{ page_obj.number}} of
+            {{ page_obj.paginator.num_pages }}</a></li>
 
 
         <!--        next and last-->

@@ -6,8 +6,7 @@ menu = [{'title': 'Main', 'url_name': 'home'},
         {'title': 'Add page', 'url_name': 'add'},
         {'title': 'About', 'url_name': 'about'},
         {'title': 'Contact', 'url_name': 'contact'},
-        {'title': 'Admin', 'url_name': 'admin'},
-        {'title': 'Login', 'url_name': 'login'},
+        {'title': 'Admin', 'url_name': 'admin'}
         ]
 
 

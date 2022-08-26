@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 from .models import *
@@ -24,3 +26,17 @@ class AddBreedForm(forms.ModelForm):
         if len(title) > 200:
             raise ValidationError('Length of title cannot be higher than 200 symbols.')
         return title
+
+
+class RegisterUserForm(UserCreationForm):
+    username = forms.CharField(label='Username',
+                               widget=forms.TextInput(attrs={'class': 'form-control form-control-lg'}))
+    email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-control form-control-lg'}))
+    password1 = forms.CharField(label='Password',
+                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    password2 = forms.CharField(label='Re-enter password ', widget=forms.PasswordInput(
+        attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
