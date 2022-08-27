@@ -1,5 +1,4 @@
-from django.urls import path
-
+from django.urls import include, path
 from .views import *
 
 urlpatterns = [
@@ -12,5 +11,5 @@ urlpatterns = [
     path('logout/', logout_user, name='logout'),
     path('post/<slug:post_slug>', ShowPost.as_view(), name='post'),
     path('category/<slug:cat_slug>', BreedsCategory.as_view(), name='category'),
-    path('admin', admin_page, name='admin'),
+    path('admin/', admin_page, name='admin'),
 ]

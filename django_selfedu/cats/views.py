@@ -25,7 +25,7 @@ class BreedsHome(DataMixin, ListView):
 
     def get_queryset(self):
         '''returns data from db to objects'''
-        return Breeds.objects.filter(is_published=True)
+        return Breeds.objects.filter(is_published=True).select_related('category')
 
 
 class CreateBreed(LoginRequiredMixin, DataMixin, CreateView):
@@ -62,12 +62,14 @@ class BreedsCategory(DataMixin, ListView):
     allow_empty = False
 
     def get_queryset(self):
-        return Breeds.objects.filter(category__slug=self.kwargs['cat_slug'], is_published=True)
+        return Breeds.objects.filter(category__slug=self.kwargs['cat_slug'], is_published=True).select_related(
+            'category')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title=context['posts'][0].category,
-                                      cat_selected=context['posts'][0].category_id)
+        title = context['posts'][0].category
+        c_def = self.get_user_context(title=title,
+                                      cat_selected=title.id)
         return dict(list(context.items()) + list(c_def.items()))
 
 
@@ -106,7 +108,7 @@ def logout_user(request):
     return redirect('login')
 
 
-#
+# Some helpful pages
 def about(request):
     context = {
         'title': 'About site',
@@ -115,7 +117,7 @@ def about(request):
 
 
 def admin_page(request):
-    pass
+    return reverse_lazy('admin')
 
 
 def contact(request):
