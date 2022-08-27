@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, FormView
+from django.views.generic import ListView, DetailView, CreateView, FormView, TemplateView
 
 from .models import *
 from .forms import *
@@ -108,12 +108,14 @@ def logout_user(request):
     return redirect('login')
 
 
-# Some helpful pages
-def about(request):
-    context = {
-        'title': 'About site',
-    }
-    return render(request, 'cats/about.html', context=context)
+# Some helpful page
+class AboutPage(DataMixin, TemplateView):
+    template_name = 'cats/about.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='About site')
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 def admin_page(request):
