@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from captcha.fields import CaptchaField
 
 from .models import *
 
@@ -51,3 +52,12 @@ class LoginUserForm(AuthenticationForm):
     class Meta:
         model = User
         fields = ('username', 'password')
+
+
+class ContactForm(forms.Form):
+    name = forms.CharField(label='Name', max_length=255,
+                           widget=forms.TextInput(attrs={'class': 'form-control form-control-lg'}))
+    email = forms.EmailField(label='Email', widget=forms.TextInput(attrs={'class': 'form-control form-control-lg'}))
+    content = forms.CharField(label='Content', widget=forms.Textarea(
+        attrs={'class': 'form-floating', 'rows': 10, 'placeholder': 'Your thoughts'}))
+    captcha = CaptchaField()

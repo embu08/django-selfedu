@@ -22,7 +22,8 @@ from django_selfedu import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('cats.urls'))
+    path('', include('cats.urls')),
+    path('captcha/', include('captcha.urls')),
 ]
 
 if settings.DEBUG:
