@@ -32,7 +32,7 @@ $ git clone https://github.com/embu08/django-selfedu.git
 ```bash
 $ virtualenv env
 $ source env/bin/activate
-$ cd django_selfedu
+$ cd django_selfedu/
 $ pip3 install -r requirements.txt
 ```
 
