@@ -39,6 +39,7 @@ $ pip3 install -r requirements.txt
 > Start the app
 
 ```bash
+$ cd django_selfedu/
 $ python manage.py runserver
 ```
 
